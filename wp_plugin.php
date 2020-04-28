@@ -81,12 +81,12 @@ class owa_wp_plugin extends owa_wp_module {
 		if ( $this->getOption('enable') ) {
 			
 			// if Borlabs Cookie is present, insert javascript tracking tag after user has given consent
-			if (function_exists('BorlabsCookieHelper') && BorlabsCookieHelper()->gaveConsent('openwebanalytics')) {
+			if (function_exists('BorlabsCookieHelper') && BorlabsCookieHelper()->gaveConsent('openwebanalytics') && !is_user_logged_in()) {
 				add_action('wp_head', array( $this,'insertTrackingTag' ), 100 );
 			}
 
 			// insert javascript tracking tag on sites without Borlabs Cookie
-			if (!function_exists('BorlabsCookieHelper'))  {
+			if (!function_exists('BorlabsCookieHelper') && !is_user_logged_in())  {
 				add_action('wp_head', array( $this,'insertTrackingTag' ), 100 );
 			}
 			
