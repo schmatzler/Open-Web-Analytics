@@ -80,8 +80,15 @@ class owa_wp_plugin extends owa_wp_module {
 		
 		if ( $this->getOption('enable') ) {
 			
-			// insert javascript tracking tag	
-			add_action('wp_head', array( $this,'insertTrackingTag' ), 100 );
+			// if Borlabs Cookie is present, insert javascript tracking tag after user has given consent
+			if (function_exists('BorlabsCookieHelper') && BorlabsCookieHelper()->gaveConsent('openwebanalytics')) {
+				add_action('wp_head', array( $this,'insertTrackingTag' ), 100 );
+			}
+
+			// insert javascript tracking tag on sites without Borlabs Cookie
+			if (!function_exists('BorlabsCookieHelper'))  {
+				add_action('wp_head', array( $this,'insertTrackingTag' ), 100 );
+			}
 			
 			// track feeds
 			if ( $this->getOption('trackFeeds') ) {
